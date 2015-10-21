@@ -1,0 +1,17 @@
+{
+    "contents" : "rm(list = ls(all.names = TRUE))\noptions(stringsAsFactors = FALSE)\n\nFILES = c(\n  list.files('.', '.pdf$'),\n  '../../../knitr-book2/DDR-Yihui-Xie-Chap1-3.pdf'\n)\ni = file.exists(FILES)\nif (!all(i)) stop('These files do not exist: ', paste(FILES[!i], collapse = ', '))\n\ncounts = data.frame(file = basename(FILES), count = 0)\nif (file.exists('download_count.csv')) {\n  counts = rbind(counts, read.csv('download_count.csv'))\n  counts = counts[order(counts$file, counts$count, decreasing = TRUE), ]\n  counts = counts[!duplicated(counts$file), ]\n}\nrownames(counts) = FILES[match(basename(FILES), counts$file)]\n.Last = function() {\n  counts = counts[order(counts$file), , drop = FALSE]\n  write.csv(counts, 'download_count.csv', row.names = FALSE)\n}\n\nlibrary(httr)\ntoken = Sys.getenv('GH_TOKEN', NA)\nif (is.na(token)) stop('GH_TOKEN not found')\na = authenticate(token, \"x-oauth-basic\", \"basic\")\nGET = function(...) {\n  r = httr::GET(..., a)\n  stop_for_status(r)\n  r\n}\nDELETE = function(...) {\n  r = httr::DELETE(..., a)\n  stop_for_status(r)\n  r\n}\nPOST = function(...) {\n  r = httr::POST(..., a)\n  stop_for_status(r)\n  r\n}\n\nr = GET('https://api.github.com/repos/yihui/knitr/releases')\nx = content(r, 'parsed')\nfor (i in x) {\n  if (i$tag_name == 'doc') {\n    r_url = i$url\n    r_upload = i$upload_url\n    break\n  }\n}\nr = GET(r_url)\nx = content(r, 'parsed')\n# delete assets that already exist\nfor (i in x$assets) {\n  j = match(i$name, counts$file)\n  if (is.na(j)) next\n  if (i$size == file.info(rownames(counts)[j])[, 'size']) {\n    FILES = setdiff(FILES, rownames(counts)[j])\n    message(i$name, ' probably not changed')\n    next\n  }\n  counts[j, 2] = counts[j, 2] + i$download_count\n  message('deleting ', i$name)\n  DELETE(i$url)\n  Sys.sleep(1)\n}\n# upload files\nfor (f in FILES) {\n  message('uploading ', f)\n  POST(\n    sub('{?name}', '', r_upload, fixed = TRUE),\n    query = list(name = basename(f)), body = upload_file(f, mime::guess_type(f))\n  )\n  Sys.sleep(1)\n}\n\nq('no')\n",
+    "created" : 1445450558119.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3195796066",
+    "id" : "8F148AB1",
+    "lastKnownWriteTime" : 1445450245,
+    "path" : "~/R/win-library/3.2/knitr/examples/upload-github.R",
+    "project_path" : null,
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "type" : "r_source"
+}

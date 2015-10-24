@@ -16,7 +16,7 @@ open(DATAFILE, "< $fileuri")or die("error :$!");
 
 
 #月
-@manthly  = array(31,28,31,30,31,,30,31,31,30,31,30,31);
+@month  = ("31","28","31","30","31","30","31","31","30","31","30","31");
 
 
 @ip;
@@ -93,11 +93,21 @@ if ($line =~ /4/) {
 
 $kankaku = 86400;
 
-for($z=1230735600;$z<1262271600;$z+=$kankaku){
-    $ii = $z + $kankaku;
-    $pattern = "[$z-$ii]";
+$z=1230735600;
+$abc = 0;
+$mct = 0;
 
-    push(@splittime,$z);
+
+for($monthcount = 0;$monthcount<12;$monthcount++){
+
+    $z += $abc;
+    $mct = $month[$monthcount];
+    $abc = $mct*86400;
+    print "\n mtc === $mct \n";
+
+    $splittime[$monthcount]=$z;
+    $owari = $z+$abc;
+
     
     $b1=0;
     $b2=0;
@@ -110,23 +120,21 @@ for($z=1230735600;$z<1262271600;$z+=$kankaku){
     $b9=0;
     $b10=0;
     $b11=0;
-    
 
 
-    for($i=0;$i<=$#time;$i++){
+#for($z;$z<$owari;$z+=$kankaku){
 
- 	     $iii  = $time[$i]-$z;
+ #   $ii = $z + $kankaku;
+ #   $pattern = "[$z-$ii]";   
 
+    for($i=0;$i<=$#time;$i++){	     
 
-	     
+	$iii  = $time[$i]-$z;
 	#time範囲
-	if (0 <= $iii && $kankaku >$iii ) {
+	if (0 <= $iii && $abc >$iii ) {
 	 
 
-
-
-   
-	  if ($text[$i] =~ /HTML/) {
+  	  if ($text[$i] =~ /HTML/) {
 	      $b1++;
 	  }elsif($text[$i] =~ /text/){
 	      $b2++;
@@ -154,31 +162,31 @@ for($z=1230735600;$z<1262271600;$z+=$kankaku){
               $b11++;
           }
 
-
+	}
 	  
 
 	}
 
 
 
-    }
 
-	
-    push(@htmlnum,$b1);
-    push(@text,$b2);
-    push(@nonmultipart,$b3);
-    push(@multipart_text,$b4);
-    push(@multipart_nontext,$b5);
-	 push(@spliturl,$b6);
-	 push(@spliturlper,$b7);
-	 push(@splitspam_word,$b8);
-	 push(@splitspam_f,$b9);
-	 push(@splitnonspam,$b10);
-	 push(@splitspamspam,$b11);
 
-   
-  
+
+    $htmlnum[$monthcount]=$b1;
+    $text[$monthcount]=$b2;
+    $nonmultipart[$monthcount] = $b3;
+    $multipart_text[$monthcount]=$b4;
+    $multipart_nontext[$monthcount]=$b5;
+    $spliturl[$monthcount]=$b6;
+    $spliturlper[$monthcount]=$b7;
+    $splitspam_word[$monthcount]=$b8;
+    $splitspam_f[$monthcount]=$b9;
+    $splitnonspam[$monthcount]=$b10;
+    $splitspamspam[$monthcount]=$b11;
+
 }
+
+
 
 
 

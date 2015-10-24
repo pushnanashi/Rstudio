@@ -6,9 +6,10 @@ use warnings;
 #ボアソン分布作成用プログラム　カウントできる.
 #agv（引数にarffを指定））
 
+
+$rm = `rm -rf count.txt`;
+
 my $fileuri = $ARGV[0];
-
-
 
 open(DATAFILE, "< $fileuri")or die("error :$!");
 
@@ -81,9 +82,15 @@ if ($line =~ /4/) {
 #始まりの値　終わりの値
 #1228118400 <-2008/12/01 17:00:00  1267426162<-2010/03/01 15:49:22   (1228118400 - 1267455600)を時間間隔で検索
 
+#1時間を得たい場合は3600
+#1日86400
+#一月 ....
+#4半期 ...
 
-for($z=1228118400;$z<=1267455600;$z+=3600){
-    $ii = $z + 3600;
+$kankaku = 86400;
+
+for($z=1230735600;$z<1262271600;$z+=$kankaku){
+    $ii = $z + $kankaku;
     $pattern = "[$z-$ii]";
 
     push(@splittime,$z);
@@ -104,9 +111,17 @@ for($z=1228118400;$z<=1267455600;$z+=3600){
 
     for($i=0;$i<=$#time;$i++){
 
+ 	     $iii  = $time[$i]-$z;
+
+
+	     
 	#time範囲
-	if ($time[$i] =~ /$pattern/) {
-	    
+	if (0 <= $iii && $kankaku >$iii ) {
+	 
+
+
+
+   
 	  if ($text[$i] =~ /HTML/) {
 	      $b1++;
 	  }elsif($text[$i] =~ /text/){
@@ -124,15 +139,17 @@ for($z=1228118400;$z<=1267455600;$z+=3600){
 
 
 	  $b6+=$url[$i];
-	  $b7+=$urlper[$i];
-	  
+	  $b7+=$urlper[$i];	  
 	  $b8+=$spam_word[$i];
-          $b9+=$spam_f[$i];   
-	  if($multi[$i] =~ /non-spam/){
+          $b9+=$spam_f[$i];
+   
+	  
+	  if($spam[$i] =~ /non-spam/){
               $b10++;
-          }elsif($multi[$i] =~ /spam/){
+          }elsif($spam[$i] =~ /spam/){
               $b11++;
           }
+
 
 	  
 
@@ -147,7 +164,7 @@ for($z=1228118400;$z<=1267455600;$z+=3600){
     push(@text,$b2);
     push(@nonmultipart,$b3);
     push(@multipart_text,$b4);
-	 push(@multipart_nontext,$b5);
+    push(@multipart_nontext,$b5);
 	 push(@spliturl,$b6);
 	 push(@spliturlper,$b7);
 	 push(@splitspam_word,$b8);
@@ -165,7 +182,11 @@ for($z=1228118400;$z<=1267455600;$z+=3600){
 
     for($i=0;$i<=$#splittime;$i++){
 
-      print ECHO "$splittime[$i],$html1um[$i],$text[$i],$nonmultipart[$i],$multipart_text[$i],$multipart_nontext[$i],$spliturl[$i],$spliturlper[$i],$splitspam_word[$i],$splitspam_f[$i],$splitnonspam[$i],$splitspamspam[$i]\n";
+#	print  "$splittime[$i],$htmlnum[$i],$text[$i],$nonmultipart[$i],$multipart_text[$i],$multipart_nontext[$i],$spliturl[$i],$spliturlper[$i],$splitspam_word[$i],$splitspam_f[$i],$splitnonspam[$i],$splitspamspam[$i]\n";
+
+
+
+      print ECHO "$splittime[$i],$htmlnum[$i],$text[$i],$nonmultipart[$i],$multipart_text[$i],$multipart_nontext[$i],$spliturl[$i],$spliturlper[$i],$splitspam_word[$i],$splitspam_f[$i],$splitnonspam[$i],$splitspamspam[$i]\n";
 
 
 

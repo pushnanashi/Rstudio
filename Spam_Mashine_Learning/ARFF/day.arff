@@ -1,3 +1,19 @@
+@relation mail
+
+@attribute time real
+@attribute html real
+@attribute text real
+@attribute nonmultipart real
+@attribute multipart_text real
+@attribute multipart_nontext real
+@attribute url real
+@attribute urlper real
+@attribute spam_word real
+@attribute spam_f real
+@attribute nonspam real
+@attribute spam real
+
+@data
 1230735600,1,5,3,3,0,21,0.35347648,0.06539085,13.35888234,2,4
 1230822000,0,7,1,6,0,19,0.33842754,0.06629072,12.04246775,1,6
 1230908400,1,8,2,7,0,31,0.53639067,0.11840737,16.74767154,1,8

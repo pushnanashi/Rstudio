@@ -165,8 +165,6 @@ for($z=1230735600;$z<1262271600;$z+=$kankaku){
 
 	
     push(@htmlnum,$b1);
-
-    
     push(@textnum,$b2);
     push(@nonmultipart,$b3);
     push(@multipart_text,$b4);

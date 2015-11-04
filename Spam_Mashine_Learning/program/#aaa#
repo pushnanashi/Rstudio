@@ -1,0 +1,62 @@
+#!/usr/bin/env perl
+#読み込み、検索、出力
+use warnings;
+my $fileuri1 = $ARGV[0];
+my $fileuri2 = $ARGV[1];
+
+open(DATAFILE1, "< $fileuri1")or die("error :$!");
+open(DATAFILE1, "< $fileuri2")or die("error :$!");
+
+@the1;
+@count1;
+@the2;
+@count2;
+
+
+while (my $line = <DATAFILE1>){
+    chomp($line);
+
+    ($a1,$a2)=split($line);
+
+    push(@the1,$a1);
+    push(@count1,$a2);
+}
+
+while (my $line = <DATAFILE2>){
+    chomp($line);
+
+    ($a1,$a2)=split($line);
+
+    push(@the2,$a1);
+    push(@count2,$a2);
+}
+
+
+@the3;
+@count3;
+
+$i = 1;
+
+foreach my $word1(@the1){
+    $ii = 1;
+    foreach my $word2(@the2){
+	
+	$ii++;
+	
+	if ($word1 !=~ /$word2/) {
+       	push(@the3,$word1);    
+	push(@the3,$count1[$i]);
+	break;
+	}
+
+    }
+    $i++;
+
+}
+
+    open(ECHO, "> count.txt")or die("error :$!");
+
+    for($i=0;$i<=$#splittime;$i++){
+
+
+    }

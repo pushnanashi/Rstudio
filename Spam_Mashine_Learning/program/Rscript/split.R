@@ -1,4 +1,4 @@
-spliting <- function(data,start,end,point){
+spliting <- function(data,start,end,point,Label){
 
   ncolnum<-end%/%point
   print(ncolnum)
@@ -19,7 +19,7 @@ spliting <- function(data,start,end,point){
  for(ii  in 1:ncolnum){
    
  
-   newcol<-paste("R",ii)
+   newcol<-paste(Label,ii)
    name <- rbind (name, newcol) 
    
    

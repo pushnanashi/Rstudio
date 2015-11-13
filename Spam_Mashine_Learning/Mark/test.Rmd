@@ -1,0 +1,41 @@
+---
+title: "test"
+output: html_document
+---
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+source("/home/rstudio/RStudio/Rstudio/Spam_Mashine_Learning/program/Rscript/split.R")
+library("RWeka", lib.loc="~/R/x86_64-redhat-linux-gnu-library/3.2")
+kaiseki_data<-read.arff("/home/rstudio/RStudio/Rstudio/Spam_Mashine_Learning/ARFF/kaiseki_data.arff")
+kaiseki_data.op <- options(max.print=999999)
+nonspam<-kaiseki_data[kaiseki_data$spam=="non-spam",]
+spam<-kaiseki_data[kaiseki_data$spam=="spam",]
+spamsp<-spliting(spam$url_per,1,1889,20,"N")
+nonspamsp<-spliting(nonspam$url_per,1,1683,20,"S")
+All<-rbind(nonspamsp,spamsp)
+All
+km<-kmeans(All,10)
+km$cluster
+
+
+#縦向きデータならplotしても大丈夫だけど、横向きのこれは無理無理A1 <- t ( A )
+A1 <- t (All[1,])
+A2 <- t (All[2,])
+A3 <- t (All[3,])
+plot(A1,type="l")
+ par(new=T)   
+plot(A2,type="l")
+ par(new=T)    
+plot(A3,type="l")
+
+cor(A2, A3, method="spearman") 
+cor.test(A2, A3, method="pearson")  
+```
+
+You can also embed plots, for example:
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

@@ -1,41 +1,142 @@
 ---
-title: "test"
-output: html_document
+title: "output_data"
+output: word_document
 ---
+概要
+k-meansで出力された、クラスター分析をplotする。
+要素はtext_type multipart url url_per spam_word_per spam_fの6つを解析している。
+相関がそこそこあると結果が出ているが、上がり下がりは大まかに捉えていることが
+ハッキリと分かる。
+Classを10しているが、１−２箇所は上がり下がりが予期できていない。Classを15として解析してもあまり結果は変わらなかった。
+kmeansでは最初のクラスタにランダムな指数を与え、クラスタを増やしていくので乱数が毎度違ってくる。つまり大なり小なりクラスタリング結果に差が出てくる。10回ほど実行し、差を見ることが重要と考えられる。
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+実際クラスタリングされた同じクラスのデータの相関を見ている。として0.31-0.15となっている。全体を調べた訳ではないので、ハッキリとは言えないが目視後同じクラスターになったものを2つ選んで、相関を見た。結果は以下となる。
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+url_per
+0.3068525
+
+url
+0.2500984
+
+spam_f
+-0.1344127
+
+spam_word_per
+-0.1344127
+
+text_type
+NA      #エラーが出るのはSpamが取り得るのは0か1かでありnonspamは1か2しか取りえない。つまり0,2が被っていないので検定できず相関は0である。
+
+multipart
+0.2357023
+
+
 
 ```{r}
 source("/home/rstudio/RStudio/Rstudio/Spam_Mashine_Learning/program/Rscript/split.R")
 library("RWeka", lib.loc="~/R/x86_64-redhat-linux-gnu-library/3.2")
-kaiseki_data<-read.arff("/home/rstudio/RStudio/Rstudio/Spam_Mashine_Learning/ARFF/kaiseki_data.arff")
+kaiseki_data<-read.arff("/home/rstudio/RStudio/Rstudio/Spam_Mashine_Learning/ARFF/kaiseki_data2.arff")
 kaiseki_data.op <- options(max.print=999999)
 nonspam<-kaiseki_data[kaiseki_data$spam=="non-spam",]
 spam<-kaiseki_data[kaiseki_data$spam=="spam",]
 spamsp<-spliting(spam$url_per,1,1889,20,"N")
 nonspamsp<-spliting(nonspam$url_per,1,1683,20,"S")
+spamsp2<-spliting(spam$url,1,1889,20,"N")
+nonspamsp2<-spliting(nonspam$url,1,1683,20,"S")
+spamsp3<-spliting(spam$spam_word_per,1,1889,20,"N")
+nonspamsp3<-spliting(nonspam$spam_word_per,1,1683,20,"S")
+spamsp4<-spliting(spam$spam_word_per,1,1889,20,"N")
+nonspamsp4<-spliting(nonspam$spam_word_per,1,1683,20,"S")
+
+spamsp5<-spliting(spam$text_type,1,1889,20,"N")
+nonspamsp5<-spliting(nonspam$text_type,1,1683,20,"S")
+spamsp6<-spliting(spam$multipart,1,1889,20,"N")
+nonspamsp6<-spliting(nonspam$multipart,1,1683,20,"S")
+
 All<-rbind(nonspamsp,spamsp)
+All2<-rbind(nonspamsp2,spamsp2)
+All3<-rbind(nonspamsp3,spamsp3)
+All4<-rbind(nonspamsp4,spamsp4)
+All5<-rbind(nonspamsp5,spamsp5)
+All6<-rbind(nonspamsp6,spamsp6)
+
 All
+All2
+All3
+All4
+All5
+All6
+
 km<-kmeans(All,10)
+km2<-kmeans(All2,10)
+km3<-kmeans(All3,10)
+km4<-kmeans(All4,10)
+km5<-kmeans(All5,10)
+km6<-kmeans(All6,10)
+
 km$cluster
+km2$cluster
+km3$cluster
+km4$cluster
+km5$cluster
+km6$cluster
+
+#縦向きデータならplotしても大丈夫だけど、横向きのこれは無理
+A1 <- t (All[177,])
+A2 <- t (All[178,])
+A3 <- t (All2[177,])
+A4 <- t (All2[178,])
+A5 <- t (All3[177,])
+A6 <- t (All3[178,])
+A7 <- t (All4[177,])
+A8 <- t (All4[178,])
+A9 <- t(All5[176,])
+A10 <- t(All5[177,])
+A11 <- t(All6[171,])
+A12 <- t(All6[172,])
 
 
-#縦向きデータならplotしても大丈夫だけど、横向きのこれは無理無理A1 <- t ( A )
-A1 <- t (All[1,])
-A2 <- t (All[2,])
-A3 <- t (All[3,])
+ 
 plot(A1,type="l")
- par(new=T)   
-plot(A2,type="l")
  par(new=T)    
-plot(A3,type="l")
+plot(A2,type="l")
 
-cor(A2, A3, method="spearman") 
-cor.test(A2, A3, method="pearson")  
+plot(A3,type="l")
+ par(new=T)    
+plot(A4,type="l")
+
+plot(A5,type="l")
+ par(new=T)    
+plot(A6,type="l")
+
+plot(A7,type="l")
+ par(new=T)    
+plot(A8,type="l")
+
+plot(A9,type="l")
+ par(new=T)    
+plot(A10,type="l")
+
+plot(A11,type="l")
+ par(new=T)    
+plot(A12,type="l")
+
+soukan.url_per<-cor(A1, A2, method="spearman") 
+soukan.url<-cor(A3, A4, method="spearman") 
+soukan.spam_word_per<-cor(A5, A6, method="spearman") 
+soukan.url_f<-cor(A7, A8, method="spearman") 
+soukan.text_type<-cor(A9, A10, method="spearman") 
+soukan.multi<-cor(A11, A12, method="spearman") 
+
+cor(A1, A2, method="spearman") 
+cor(A3, A4, method="spearman") 
+cor(A5, A6, method="spearman") 
+cor(A7, A8, method="spearman") 
+
+#エラーが出るのはSpamは0か1かでありnonspamは1か2しか取りえない。つまり0,2が被っていないので検定できず相関は0である。
+cor(A9, A10, method="spearman") 
+cor(A11, A12, method="spearman") 
+
 ```
 
-You can also embed plots, for example:
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+以上。
